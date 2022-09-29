@@ -19,8 +19,10 @@
             <#return "DateTime">
             <#break>
         <#case '7'> <#-- DOUBLE -->
-        <#case '13'> <#-- MONEY -->
             <#return "double">
+            <#break>
+        <#case '13'> <#-- MONEY -->
+            <#return "decimal">
             <#break>
         <#case '9'> <#-- FLOAT -->
             <#return "float">

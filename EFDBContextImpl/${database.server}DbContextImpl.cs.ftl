@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.Models;
+using ${database.packageName}.EntityFrameworkCore.Models;
 
-namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.${database.packageName}
+namespace ${database.packageName}.EntityFrameworkCore
 {
-    public partial class ${database.getServer()}DbContextImpl${database.packageName} : ${database.getServer()}DbContext
+    public partial class ${database.name}DbContextImpl : ${database.name}DbContext
     {
-        public ${database.getServer()}DbContextImpl${database.packageName}([NotNull] DbContextOptions<${database.getServer()}DbContextImpl${database.packageName}> options) : base(options) { }
+        public ${database.name}DbContextImpl([NotNull] DbContextOptions<${database.name}DbContextImpl> options) : base(options) { }
 
         <#list database.getTables() as table>
         <#list table.procs as proc>
@@ -24,8 +24,8 @@ namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.${database.pa
 ${pl}
 </#list>
 ";
-        public override IQueryable<${table.name}Entity_${proc.name}> ${table.name}Entity_${proc.name}(${base.getTypedFields(proc.inputs)})
-            => ${table.name}_${proc.name}Set.FromSqlRaw(${table.name}${proc.name}Statement<#if proc.inputs?size gt 0>, </#if><#list proc.inputs as field>${field.name}<#compress><#sep>,</#compress></#list>);
+        public override IQueryable<${table.name}Entity${proc.name}> ${table.name}Entity${proc.name}(${base.getTypedFields(proc.inputs)})
+            => ${table.name}${proc.name}Set.FromSqlRaw(${table.name}${proc.name}Statement<#if proc.inputs?size gt 0>, </#if><#list proc.inputs as field>${field.name}<#compress><#sep>,</#compress></#list>);
         </#if>
         </#list>
         </#list>

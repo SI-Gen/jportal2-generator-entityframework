@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.Models
+namespace ${database.packageName}.EntityFrameworkCore.Models
 {
     public class ${table.name}Entity
     {
@@ -27,7 +27,7 @@ namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.Models
         <#if base.getEFColumnType(field) == 'string'>
         [StringLength(${field.length?c})]
         </#if>
-        public <#compress>${base.getEFColumnType(field)}<#if field.isNull()>?</#if></#compress> ${field.name} { get; set; }
+        public <#compress>${base.getEFColumnType(field)}<#if field.isNull()>?</#if></#compress> ${field.name} { get; set; }<#if field.type?c = '18'> = DateTime.UtcNow; </#if>
 <#if field.isNull()>
 #nullable disable
 </#if>
@@ -40,7 +40,7 @@ namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.Models
     <#list table.procs as proc>
     <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "">
         <#if proc.lines?size gt 0 && proc.outputs?size gt 0>
-    public class ${table.name}Entity_${proc.name}
+    public class ${table.name}Entity${proc.name}
     {
         <#list proc.outputs as field>
 <#if field.isNull()>

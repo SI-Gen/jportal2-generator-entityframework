@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore.Models;
+using ${database.packageName}.EntityFrameworkCore.Models;
 
-namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore
+namespace ${database.packageName}.EntityFrameworkCore
 {
-    public interface I${database.getServer()}DbContext
+    public interface I${database.name}DbContext
     {
         <#list database.getTables() as table>
         DbSet<${table.name}Entity> ${table.name}Entity { get; set; }
@@ -21,8 +21,8 @@ namespace Bbd.Vanguard.${database.getServer()}.EntityFrameworkCore
         <#list table.procs as proc>
         <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
         <#--  SI Specific Implementation if ever needed?  -->
-        <#--  <#if proc.isSingle()>Task<${table.name}_${proc.name}><#elseif proc.outputs?size gt 0>Task<IEnumerable<${table.name}_${proc.name}>><#else>Task</#if> Execute${table.name}_${proc.name}  -->
-        IQueryable<${table.name}Entity_${proc.name}> ${table.name}Entity_${proc.name}(${base.getTypedFields(proc.inputs)});
+        <#--  <#if proc.isSingle()>Task<${table.name}${proc.name}><#elseif proc.outputs?size gt 0>Task<IEnumerable<${table.name}${proc.name}>><#else>Task</#if> Execute${table.name}${proc.name}  -->
+        IQueryable<${table.name}Entity${proc.name}> ${table.name}Entity${proc.name}(${base.getTypedFields(proc.inputs)});
         </#if>
         </#list>
         </#list>
