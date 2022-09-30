@@ -84,20 +84,3 @@
     </#list>
     <#return retVal>
 </#function>
-<#function formatEFLines lines>
-    <#assign retList = [ ] />
-    <#list lines as line>
-        <#local addLine = line>
-        <#local addLine = addLine?replace("\\", "\"")>
-        <#list 1..999 as i>
-            <#local current_index = addLine?index_of('?')>
-            <#if (current_index > -1)>
-                <#local addLine = addLine[0..current_index - 1] + "{${line.getPlaceHolderInputPos()}}" + addLine[current_index + 1..]>
-            <#else>
-                <#break>
-            </#if>
-        </#list>
-        <#assign retList = retList + [ addLine ] />
-    </#list>
-    <#return retList>
-</#function>

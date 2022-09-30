@@ -12,7 +12,7 @@ using ${database.packageName}.EntityFrameworkCore.Models;
 
 namespace ${database.packageName}.EntityFrameworkCore
 {
-    public abstract class ${database.name}DbContext : DbContext, I${database.name}DbContext
+    public class ${database.name}DbContext : DbContext
     {
         public ${database.name}DbContext([NotNull] DbContextOptions options) : base(options) { }
 
@@ -42,17 +42,13 @@ namespace ${database.packageName}.EntityFrameworkCore
         <#list database.getTables() as table>
         <#list table.procs as proc>
         <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
-        <#--  SI Specific Implementation if ever needed?  -->
-        <#--  public abstract <#if proc.isSingle()>Task<${table.name}${proc.name}><#elseif proc.outputs?size gt 0>Task<IEnumerable<${table.name}${proc.name}>><#else>Task</#if> Execute${table.name}${proc.name}  -->
-        private static string ${table.name}${proc.name}Statement = @"
-<#list base.formatEFLines(proc.lines) as pl>
-${pl}
-</#list>
-";
         public virtual IQueryable<${table.name}Entity${proc.name}> ${table.name}Entity${proc.name}(${base.getTypedFields(proc.inputs)})
-            => ${table.name}${proc.name}Set.FromSqlRaw(${table.name}${proc.name}Statement<#if proc.inputs?size gt 0>, </#if><#list proc.inputs as field>${field.name}<#compress><#sep>,</#compress></#list>);
+            => ${table.name}${proc.name}Set.FromSqlInterpolated($@"<#list proc.lines as pl>
+                <#if pl.isVar()>${pl.getUnformattedLine()?replace("^(_ret.*\\w)","{$1}","r")?replace(":([^[,\\s]]+)","{$1}","r")}<#else>${pl.getUnformattedLine()?replace("^(_ret.*\\w)","{$1}","r")?replace(":([^[,\\s]]+)","{$1}","r")}<#if pl.getUnformattedLine() == " ) "></#if></#if></#list>"
+            );
         </#if>
         </#list>
         </#list>
+        
     }
 }
