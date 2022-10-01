@@ -17,7 +17,7 @@ namespace ${database.packageName}.EntityFrameworkCore
         public ${database.name}DbContext([NotNull] DbContextOptions options) : base(options) { }
 
         <#list database.getTables() as table>
-        public DbSet<${table.name}Entity> ${table.name}Entity { get; set; }
+        public DbSet<${table.name}Entity> ${table.name}Set { get; set; }
         <#list table.procs as proc>
         <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
         protected DbSet<${table.name}Entity${proc.name}> ${table.name}${proc.name}Set { get; set; }
@@ -26,11 +26,10 @@ namespace ${database.packageName}.EntityFrameworkCore
         </#list>
         protected virtual string GetTableName(string name) => name;
         protected virtual string GetSchemaName(string name) => name;
-        protected virtual string MainSchema() => "${database.getSchema()}";
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             <#list database.getTables() as table>
-            modelBuilder.Entity<${table.name}Entity>().ToTable(GetTableName("${table.name}"), GetSchemaName(MainSchema()))<#if !table.hasPrimaryKey>.HasNoKey()<#elseif table.hasPrimaryKey && !table.hasIdentity>.HasKey(${base.getPrimaryKeyFieldsString(table.fields)})</#if>;
+            modelBuilder.Entity<${table.name}Entity>().ToTable(GetTableName("${table.name}"), GetSchemaName(${table.name}Entity.Scheme))<#if !table.hasPrimaryKey>.HasNoKey()<#elseif table.hasPrimaryKey && !table.hasIdentity>.HasKey(${base.getPrimaryKeyFieldsString(table.fields)})</#if>;
             <#list table.procs as proc>
             <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
             modelBuilder.Entity<${table.name}Entity${proc.name}>().HasNoKey();

@@ -12,6 +12,8 @@ namespace ${database.packageName}.EntityFrameworkCore.Models
 {
     public class ${table.name}Entity
     {
+        public static string Scheme = "${database.getSchema()}";
+
         <#list table.fields as field>
 <#if field.isNull()>
 #nullable enable
