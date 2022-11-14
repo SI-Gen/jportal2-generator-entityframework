@@ -17,10 +17,10 @@ namespace ${database.packageName}.EntityFrameworkCore
         public ${database.name}DbContext([NotNull] DbContextOptions options) : base(options) { }
 
         <#list database.getTables() as table>
-        public virtual DbSet<${table.name}Entity> ${table.name}Set { get; set; }
+        public virtual DbSet<${table.name}Entity> ${table.name} { get; set; }
         <#list table.procs as proc>
         <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
-        protected virtual DbSet<${table.name}Entity${proc.name}> ${table.name}${proc.name}Set { get; set; }
+        protected virtual DbSet<${table.name}Entity${proc.name}> ${table.name}${proc.name} { get; set; }
         </#if>
         </#list>
         </#list>
@@ -29,7 +29,7 @@ namespace ${database.packageName}.EntityFrameworkCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             <#list database.getTables() as table>
-            modelBuilder.Entity<${table.name}Entity>().ToTable(GetTableName("${table.name}"), GetSchemaName(${table.name}Entity.Scheme))<#if !table.hasPrimaryKey>.HasNoKey()<#elseif table.hasPrimaryKey && !table.hasIdentity>.HasKey(${base.getPrimaryKeyFieldsString(table.fields)})</#if>;
+            modelBuilder.Entity<${table.name}Entity>().ToTable(GetTableName(GetTableName(${table.name}Entity.TableName)), GetSchemaName(${table.name}Entity.SchemaName))<#if !table.hasPrimaryKey>.HasNoKey()<#elseif table.hasPrimaryKey && !table.hasIdentity>.HasKey(${base.getPrimaryKeyFieldsString(table.fields)})</#if>;
             <#list table.procs as proc>
             <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
             modelBuilder.Entity<${table.name}Entity${proc.name}>().HasNoKey();
@@ -42,7 +42,7 @@ namespace ${database.packageName}.EntityFrameworkCore
         <#list table.procs as proc>
         <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
         public virtual IQueryable<${table.name}Entity${proc.name}> ${table.name}Entity${proc.name}(${base.getTypedFields(proc.inputs)})
-            => ${table.name}${proc.name}Set.FromSqlInterpolated($@"<#list proc.lines as pl>
+            => ${table.name}${proc.name}.FromSqlInterpolated($@"<#list proc.lines as pl>
                 <#if pl.isVar()>${pl.getUnformattedLine()?replace("^(_ret.*\\w)","{$1}","r")?replace(":([^[,\\s]]+)","{$1}","r")}<#else>${pl.getUnformattedLine()?replace("^(_ret.*\\w)","{$1}","r")?replace(":([^[,\\s]]+)","{$1}","r")}<#if pl.getUnformattedLine() == " ) "></#if></#if></#list>"
             );
         </#if>
