@@ -1,5 +1,5 @@
 <#-- @ftlvariable name="table" type="bbd.jportal2.Table" -->
-<#import "basefunctions.ftl" as base>
+<#import "basefunctions.fm" as base>
 // ########################################################################################################################
 // ################## Generated Code. DO NOT CHANGE THIS CODE. Change it in the generator and regenerate ##################
 // ########################################################################################################################
@@ -17,10 +17,10 @@ namespace ${database.packageName}.EntityFrameworkCore
         public ${database.name}DbContext([NotNull] DbContextOptions options) : base(options) { }
 
         <#list database.getTables() as table>
-        public DbSet<${table.name}Entity> ${table.name}Set { get; set; }
+        public virtual DbSet<${table.name}Entity> ${table.name}Set { get; set; }
         <#list table.procs as proc>
         <#if !proc.isStdExtended() && !proc.isSProc() && proc.name != "" && proc.name != "Identity" && proc.lines?size gt 0 && proc.outputs?size gt 0>
-        protected DbSet<${table.name}Entity${proc.name}> ${table.name}${proc.name}Set { get; set; }
+        protected virtual DbSet<${table.name}Entity${proc.name}> ${table.name}${proc.name}Set { get; set; }
         </#if>
         </#list>
         </#list>

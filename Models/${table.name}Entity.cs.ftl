@@ -1,5 +1,5 @@
 <#-- @ftlvariable name="table" type="bbd.jportal2.Table" -->
-<#import "basefunctions.ftl" as base>
+<#import "basefunctions.fm" as base>
 // ########################################################################################################################
 // ################## Generated Code. DO NOT CHANGE THIS CODE. Change it in the generator and regenerate ##################
 // ########################################################################################################################
